@@ -43,7 +43,5 @@ dependencies {
 
     compile 'cc.cloudist.acplibrary:library:1.2.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
-
-    compile 'frankiesardo:icepick:3.2.0'
-    provided 'frankiesardo:icepick-processor:3.2.0'
+    
 }
