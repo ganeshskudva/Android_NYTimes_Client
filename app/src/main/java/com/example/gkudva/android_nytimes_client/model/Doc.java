@@ -3,65 +3,72 @@ package com.example.gkudva.android_nytimes_client.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * Created by gkudva on 18/09/17.
  */
 
+@Parcel
 public class Doc {
 
     @SerializedName("web_url")
     @Expose
-    private String webUrl;
+    public String webUrl;
     @SerializedName("snippet")
     @Expose
-    private String snippet;
+    public String snippet;
     @SerializedName("blog")
     @Expose
-    private Blog blog;
+    public Blog blog;
     @SerializedName("source")
     @Expose
-    private String source;
+    public String source;
     @SerializedName("multimedia")
     @Expose
-    private List<Multimedium> multimedia = null;
+    public List<Multimedium> multimedia = null;
     @SerializedName("headline")
     @Expose
-    private Headline headline;
+    public Headline headline;
     @SerializedName("keywords")
     @Expose
-    private List<Keyword> keywords = null;
+    public List<Keyword> keywords = null;
     @SerializedName("pub_date")
     @Expose
-    private String pubDate;
+    public String pubDate;
     @SerializedName("document_type")
     @Expose
-    private String documentType;
+    public String documentType;
     @SerializedName("new_desk")
     @Expose
-    private String newDesk;
+    public String newDesk;
     @SerializedName("section_name")
     @Expose
-    private String sectionName;
+    public String sectionName;
     @SerializedName("byline")
     @Expose
-    private Byline byline;
+    public Byline byline;
     @SerializedName("type_of_material")
     @Expose
-    private String typeOfMaterial;
+    public String typeOfMaterial;
     @SerializedName("_id")
     @Expose
-    private String id;
+    public String id;
     @SerializedName("score")
     @Expose
-    private Double score;
+    public Double score;
     @SerializedName("print_page")
     @Expose
-    private String printPage;
+    public String printPage;
+
+    public Doc() {
+    }
+
     @SerializedName("word_count")
     @Expose
-    private Integer wordCount;
+    public Integer wordCount;
 
     public String getWebUrl() {
         return webUrl;

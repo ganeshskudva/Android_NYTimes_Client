@@ -1,7 +1,7 @@
 package com.example.gkudva.android_nytimes_client.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.gkudva.android_nytimes_client.R;
 import com.example.gkudva.android_nytimes_client.model.Doc;
+import com.example.gkudva.android_nytimes_client.model.Multimedium;
+import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,47 +24,52 @@ import butterknife.ButterKnife;
  * Created by gkudva on 19/09/17.
  */
 
-public class NYTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class NYTAdapter extends RecyclerView.Adapter<NYTAdapter.ViewHolder>{
 
-    private List<Doc> mDocList;
-    private Context mContext;
-    private Callback callback;
+    public static final String MULTIMEDIA_WIDE = "wide";
+    public static final int THUMBNAIL_WIDE_TARGET_WIDTH = 190;
+    public static final int THUMBNAIL_WIDE_TARGET_HEIGHT = 126;
+    public static final String MULTIMEDIA_XLARGE = "xlarge";
+    private CallbackListener callback;
     private static final String TAG_LOG = "NYTAdapter";
+    private List<Doc> mArticles;
+    private Context mContext;
+    private String newDesk;
+    private OnItemClickListener mListener;
 
-    public NYTAdapter() {
-        this.mDocList = Collections.emptyList();
+    public void setArticles(List<Doc> articleList, String newDesk)
+    {
+        this.newDesk = newDesk;
+        this.mArticles = articleList;
+    }
+    public NYTAdapter(Context context) {
+        this.mArticles = Collections.emptyList();
+        this.mContext = context;
     }
 
-    public NYTAdapter(Context mContex) {
-        this.mContext = mContext;
-        this.mDocList = Collections.emptyList();
+    public interface CallbackListener{
+        void onItemClick(Doc article);
     }
 
-    public NYTAdapter(List<Doc> docList) {
-
-        this.mDocList = docList;
-    }
-
-    public interface Callback{
-        void onItemClick(Doc doc);
-    }
-
-    public void setCallback(Callback callback) {
+    public void setCallback(CallbackListener callback) {
         this.callback = callback;
     }
 
-    enum NewsType {
-        ARTICLE,
-        ARTICLE_PREVIEW
+    @Override
+    public int getItemCount() {
+        return mArticles.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        @BindView(R.id.ivPoster)ImageView posterImageView;
-        @BindView(R.id.tvName)
-        TextView nameTextView;
-        @BindView(R.id.tvDesc) TextView descTextView;
+        @BindView(R.id.ivArticleImage)ImageView ivArticleImage;
+        @BindView(R.id.tvArticleHeadline)
+        TextView tvArticleHeadline;
+        @BindView(R.id.tvCategory)
+        TextView tvCategory;
+        @BindView(R.id.tvArticleHeadlinePrint)
+        TextView tvArticleHeadlinePrint;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -76,68 +83,91 @@ public class NYTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     @Override
-    public int getItemViewType(int position) {
-        Doc article = mDocList.get(position);
-        if (article.getTypeOfMaterial().equalsIgnoreCase("article")) {
-            return NewsType.ARTICLE_PREVIEW.ordinal();
-        } else {
-            return NewsType.ARTICLE.ordinal();
-        }
+    public NYTAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        final View itemView = layoutInflater.inflate(R.layout.list_item_article, parent, false);
+
+        ViewHolder articleViewHolder = new ViewHolder(itemView);
+        return articleViewHolder;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder viewHolder;
-        if (viewType == NewsType.ARTICLE_PREVIEW.ordinal()) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_article_preview, parent, false);
-            viewHolder = new ArticlePreviewViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_article, parent, false);
-            viewHolder = new ArticleViewHolder(view);
+    public void onBindViewHolder(NYTAdapter.ViewHolder holder, int position) {
+        final Doc article = mArticles.get(position);
+        final List<Multimedium> multimediaList = article.getMultimedia();
+        Multimedium thumbnailWide = null;
+        Multimedium xLarge = null;
+        for(Multimedium multimedia: multimediaList) {
+            if(multimedia.getSubtype().equals(MULTIMEDIA_WIDE)){
+                thumbnailWide = multimedia;
+            }else if (multimedia.getSubtype().equals(MULTIMEDIA_XLARGE)) {
+                xLarge = multimedia;
+            }
         }
 
-        return viewHolder;
+        if (newDesk != null && !newDesk.isEmpty()) {
+            holder.tvCategory.setText(newDesk.replaceAll("^\"|\"$", "").toUpperCase());
+            if (newDesk.contains("Sports")) {
+                holder.tvCategory.setBackgroundColor(Color.YELLOW);
+            } else if (newDesk.contains("Fashion")) {
+                holder.tvCategory.setBackgroundColor(Color.GREEN);
+            } else if (newDesk.contains("Art")) {
+                holder.tvCategory.setBackgroundColor(Color.RED);
+            }
+        }
+        holder.tvArticleHeadline.setText(article.getHeadline().getMain());
+        holder.tvArticleHeadlinePrint.setText(article.getHeadline().getPrintHeadline());
+        if(thumbnailWide != null || xLarge != null) {
+            String imageUrl;
+            int targetWidth;
+            int targetHeight;
+            if(thumbnailWide != null) {
+                imageUrl = thumbnailWide.getUrl();
+                targetHeight = thumbnailWide.getHeight();
+                targetWidth = thumbnailWide.getWidth();
+            }else {
+                imageUrl = xLarge.getUrl();
+                targetHeight = THUMBNAIL_WIDE_TARGET_HEIGHT;
+                targetWidth = THUMBNAIL_WIDE_TARGET_WIDTH;
+
+            }
+            String imageFullUrl = String.format("http://www.nytimes.com/%s", imageUrl);
+            Picasso.with(mContext).load(imageFullUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .resize(targetWidth,
+                            targetHeight)
+                    .into(holder.ivArticleImage);
+        } else{
+            Picasso.with(mContext).load(R.drawable.placeholder)
+                    .resize(THUMBNAIL_WIDE_TARGET_WIDTH,
+                            THUMBNAIL_WIDE_TARGET_HEIGHT)
+                    .into(holder.ivArticleImage);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null)
+                {
+                    callback.onItemClick(article);
+                }
+            }
+
+        });
+
     }
 
-    public static class ArticleViewHolder extends RecyclerView.ViewHolder {
-
-        @Nullable
-        @BindView(R.id.headlineTextView)
-        TextView headlineTextView;
-
-        @Nullable
-        @BindView(R.id.newsDeskTextView)
-        TextView newsDeskTextView;
-
-        @Nullable
-        @BindView(R.id.snippetTextView)
-        TextView snippetTextView;
-
-        public ArticleViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void bindTo(Article article) {
-            mBinding.setArticle(article);
-            mBinding.executePendingBindings();
-        }
+    public void addAll(List<Doc> articles){
+        mArticles.addAll(articles);
+        notifyDataSetChanged();
     }
 
-    public static class ArticlePreviewViewHolder extends RecyclerView.ViewHolder {
-        private ItemArticlePreviewBinding mBinding;
+    public void clear() {
+        mArticles.clear();
+        notifyDataSetChanged();
+    }
 
-        public ArticlePreviewViewHolder(View itemView) {
-            super(itemView);
-            this.mBinding = DataBindingUtil.bind(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void bindTo(Article article) {
-            mBinding.setArticle(article);
-            mBinding.executePendingBindings();
-        }
+    public interface OnItemClickListener {
+        void onItemClick(Doc article);
     }
 }

@@ -8,6 +8,7 @@
   <dimen name="image_background_width">75dp</dimen>
   <dimen name="filter_headline_width">100dp</dimen>
   <dimen name="filter_headline_margin_top">30dp</dimen>
+  <dimen name="spacing">10dp</dimen>
 
   <dimen name="small_text">12sp</dimen>
 </resources>

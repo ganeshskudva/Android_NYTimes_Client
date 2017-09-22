@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface MainMvpView extends MvpView {
 
-    void showNews(List<Doc> docList);
+    void showNews(List<Doc> docList, String newDesk);
 
     void showMessage(String message);
 
