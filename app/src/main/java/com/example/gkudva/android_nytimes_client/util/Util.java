@@ -60,4 +60,24 @@ public class Util {
             }
         };
     }
+
+    public static int getColorCode(Context context, String category)
+    {
+        int[] actionbarColor = context.getResources().getIntArray(R.array.actionbar_color);
+        int index = 0;
+        try {
+            if (category.contains("Sports")) {
+                index = 0;
+            } else if (category.contains("Fashion")) {
+                index = 1;
+            } else {
+                index = 2;
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+        return actionbarColor[index];
+    }
 }

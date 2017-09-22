@@ -107,8 +107,9 @@ public class NYTAdapter extends RecyclerView.Adapter<NYTAdapter.ViewHolder>{
 
         if (newDesk != null && !newDesk.isEmpty()) {
             holder.tvCategory.setText(newDesk.replaceAll("^\"|\"$", "").toUpperCase());
+            article.setNewDesk(newDesk.replaceAll("^\"|\"$", ""));
             if (newDesk.contains("Sports")) {
-                holder.tvCategory.setBackgroundColor(Color.YELLOW);
+                holder.tvCategory.setBackgroundColor(Color.MAGENTA);
             } else if (newDesk.contains("Fashion")) {
                 holder.tvCategory.setBackgroundColor(Color.GREEN);
             } else if (newDesk.contains("Art")) {
@@ -143,6 +144,7 @@ public class NYTAdapter extends RecyclerView.Adapter<NYTAdapter.ViewHolder>{
                             THUMBNAIL_WIDE_TARGET_HEIGHT)
                     .into(holder.ivArticleImage);
         }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

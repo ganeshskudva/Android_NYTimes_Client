@@ -55,7 +55,7 @@
         android:id="@+id/spinnerSortOrder"
         android:entries="@array/sort_order_array"
         android:prompt="@string/sort_order"
-        android:spinnerMode="dialog"
+        android:spinnerMode="dropdown"
         android:layout_weight="1">
     </Spinner>
     </LinearLayout>
@@ -109,7 +109,7 @@
     </LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save All"
         android:id="@+id/btnSave"

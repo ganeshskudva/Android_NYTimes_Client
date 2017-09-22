@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -196,7 +197,8 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-//                presenter.loadArticles(mQuery, mFilterOptions);
+                Log.d("Ganesh", "onLoadMore");
+                presenter.loadArticles(mQuery, mFilterOptions);
             }
         };
 

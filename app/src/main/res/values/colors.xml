@@ -26,4 +26,32 @@
     <color name="golden_yellow">#FFE000</color>
     <color name="lightGrey">#E5E7E9</color>
     <color name="backgorund_green">#5DBCD2</color>
+
+    <color name="bright_pink">#FF1493</color>
+    <color name="red">#FF0000</color>
+    <color name="orange">#FF4500</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="chartreuse">#99FF00</color>
+    <color name="green">#228B22</color>
+    <color name="spring_green">#00FF00</color>
+    <color name="cyan">#00FFFF</color>
+    <color name="azure">#007FFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="magenta">#8B008B</color>
+    <color name="violet">#9932CC</color>
+
+    <array name="actionbar_color">
+        <item>@color/magenta</item>
+        <item>@color/green</item>
+        <item>@color/red</item>
+        <item>@color/bright_pink</item>
+        <item>@color/orange</item>
+        <item>@color/chartreuse</item>
+        <item>@color/spring_green</item>
+        <item>@color/cyan</item>
+        <item>@color/azure</item>
+        <item>@color/blue</item>
+        <item>@color/violet</item>
+        <item>@color/yellow</item>
+    </array>
 </resources>
