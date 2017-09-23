@@ -55,4 +55,6 @@ dependencies {
     compile 'com.facebook.stetho:stetho-urlconnection:1.5.0'
     compile 'com.facebook.stetho:stetho-okhttp:1.5.0'
     compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+
+    compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
 }

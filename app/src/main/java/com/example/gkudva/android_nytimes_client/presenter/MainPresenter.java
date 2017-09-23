@@ -113,6 +113,7 @@ public class MainPresenter implements Presenter<MainMvpView>{
                 @Override
                 public void onFailure(Call<NYTResponse> call, Throwable t) {
                     Log.d("Ganesh", "Network call failed");
+                    t.printStackTrace();
                 }
             });
         }

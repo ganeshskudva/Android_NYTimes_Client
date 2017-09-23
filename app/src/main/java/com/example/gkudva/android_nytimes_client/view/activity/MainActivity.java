@@ -14,12 +14,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.example.gkudva.android_nytimes_client.R;
 import com.example.gkudva.android_nytimes_client.model.Doc;
@@ -39,8 +39,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cc.cloudist.acplibrary.ACProgressConstant;
-import cc.cloudist.acplibrary.ACProgressFlower;
 
 public class MainActivity extends AppCompatActivity implements MainMvpView,SwipeRefreshLayout.OnRefreshListener,SearchFiltersFragment.FilterOptionsUpdateListener{
 
@@ -48,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
     private StaggeredGridLayoutManager layoutManager;
     private InfoMessage infoMessage;
     public Parcelable listState;
-    private ACProgressFlower mLoadingDialog;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private static final String TAG_LOG = "MainActivity";
     private EditText mEtSearchText;
@@ -60,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.swiperefresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.progress)
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,32 +80,23 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
         mFilterOptions = new FilterOptions();
         setupRecyclerView(mArticleRecycleView);
 
-    //    swipeRefreshLayout.setOnRefreshListener(this);
-        //presenter.loadArticles(mQuery, mFilterOptions);
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     public void showLoadingDialog()
     {
-        if (mLoadingDialog == null )
-        {
-            mLoadingDialog = new ACProgressFlower.Builder(this)
-                    .direction(ACProgressConstant.DIRECT_CLOCKWISE)
-                    .themeColor(Color.RED)
-                    .text(getResources().getString(R.string.loading))
-                    .fadeColor(Color.DKGRAY).build();
-        }
-
-        if (!mLoadingDialog.isShowing()) {
-            mLoadingDialog.show();
-
-        }
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void hideLoadingDialog()
     {
-        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-        }
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onRefresh() {
+        presenter.loadArticles(mQuery, mFilterOptions);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -114,14 +106,14 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
     }
 
     @Override
-    public Context getContext() {
-        return this;
+    protected void onPause()
+    {
+        super.onPause();
     }
 
     @Override
-    public void onRefresh() {
-        presenter.loadArticles(mQuery, mFilterOptions);
-        //swipeRefreshLayout.setRefreshing(false);
+    public Context getContext() {
+        return this;
     }
 
     @Override
@@ -129,9 +121,9 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
         NYTAdapter adapter = (NYTAdapter) mArticleRecycleView.getAdapter();
         adapter.setArticles(articleList, newDesk);
         adapter.notifyDataSetChanged();
+        hideLoadingDialog();
         mArticleRecycleView.requestFocus();
         mArticleRecycleView.setVisibility(View.VISIBLE);
-        hideLoadingDialog();
     }
 
     @Override
@@ -197,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Log.d("Ganesh", "onLoadMore");
                 presenter.loadArticles(mQuery, mFilterOptions);
             }
         };

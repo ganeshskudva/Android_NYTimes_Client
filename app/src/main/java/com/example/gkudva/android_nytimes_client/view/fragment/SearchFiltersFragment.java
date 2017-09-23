@@ -46,6 +46,8 @@ public class SearchFiltersFragment extends DialogFragment implements DatePickerD
     CheckBox mSports;
     @BindView(R.id.btnSave)
     Button mSaveButton;
+    @BindView(R.id.btnCancel)
+    Button mCancelButton;
 
     public SearchFiltersFragment() {
     }
@@ -104,6 +106,13 @@ public class SearchFiltersFragment extends DialogFragment implements DatePickerD
                     mFilterOptionsUpdateListener.onFilterOptionsChanged(mFilterOptions);
                     getDialog().dismiss();
                 }
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
             }
         });
         mSpinner.setSelection(DEFAULT_SORT_POSITION);
