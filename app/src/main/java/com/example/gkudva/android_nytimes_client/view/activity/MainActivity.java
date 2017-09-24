@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainMvpView,Swipe
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         infoMessage = new InfoMessage(this);
         mFilterOptions = new FilterOptions();
